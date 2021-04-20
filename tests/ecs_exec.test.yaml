@@ -1,0 +1,10 @@
+test_metadata:
+  type: config
+  name: ecs_exec
+  description: adds esc exec config
+
+fargate_only_cluster: true
+
+execute_command_configuration:
+  logging: DEFAULT
+  kms_key_id: my/kms/key

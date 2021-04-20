@@ -6,10 +6,16 @@ CloudFormation do
   ecs_tags << { Key: 'EnvironmentType', Value: Ref(:EnvironmentType) }
   
   cluster_name = external_parameters.fetch(:cluster_name, '')
+  configuration = {}
+  execute_command_configuration = external_parameters.fetch(:execute_command_configuration, {}).transform_keys {|k| k.split('_').collect(&:capitalize).join }
+  unless execute_command_configuration.empty?
+    configuration['ExecuteCommandConfiguration'] = execute_command_configuration
+  end
   
   ECS_Cluster(:EcsCluster) {
     ClusterName FnSub(cluster_name) unless cluster_name.empty?
     ClusterSetting({ Name: 'containerInsights', Value: Ref(:ContainerInsights) })
+    Configuration configuration unless configuration.empty?
     Tags ecs_tags
   }
   
