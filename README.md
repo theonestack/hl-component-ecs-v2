@@ -1,4 +1,8 @@
 # ecs-v2 CfHighlander component
+
+## Build status
+![cftest workflow](https://github.com/theonestack/hl-component-ecs-v2/actions/workflows/cftest/badge.svg)
+
 ## Parameters
 
 | Name | Use | Default | Global | Type | Allowed Values |
