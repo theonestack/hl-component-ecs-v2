@@ -72,7 +72,7 @@ CloudFormation do
     instance_userdata = <<~USERDATA
     #!/bin/bash
     iptables --insert FORWARD 1 --in-interface docker+ --destination 169.254.169.254/32 --jump DROP
-    service iptables save
+    iptables-save
     echo ECS_CLUSTER=${EcsCluster} >> /etc/ecs/ecs.config
     USERDATA
     
