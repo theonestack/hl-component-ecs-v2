@@ -1,7 +1,9 @@
 CloudFormation do
+
+  export = external_parameters.fetch(:export_name, external_parameters[:component_name])
   
   ecs_tags = []
-  ecs_tags << { Key: 'Name', Value: FnSub("${EnvironmentName}-#{external_parameters[:component_name]}") }
+  ecs_tags << { Key: 'Name', Value: FnSub("${EnvironmentName}-#{export}") }
   ecs_tags << { Key: 'Environment', Value: Ref(:EnvironmentName) }
   ecs_tags << { Key: 'EnvironmentType', Value: Ref(:EnvironmentType) }
   
@@ -21,12 +23,12 @@ CloudFormation do
   
   Output(:EcsCluster) {
     Value(Ref(:EcsCluster))
-    Export FnSub("${EnvironmentName}-#{external_parameters[:component_name]}-EcsCluster")
+    Export FnSub("${EnvironmentName}-#{export}-EcsCluster")
   }
   
   Output(:EcsClusterArn) {
     Value(FnGetAtt('EcsCluster','Arn'))
-    Export FnSub("${EnvironmentName}-#{external_parameters[:component_name]}-EcsClusterArn")
+    Export FnSub("${EnvironmentName}-#{export}-EcsClusterArn")
   }
   
   fargate_only_cluster = external_parameters.fetch(:fargate_only_cluster, false)
@@ -43,7 +45,7 @@ CloudFormation do
     
     EC2_SecurityGroup(:SecurityGroupEcs) {
       VpcId Ref(:VPCId)
-      GroupDescription FnSub("${EnvironmentName}-#{external_parameters[:component_name]}")
+      GroupDescription FnSub("${EnvironmentName}-#{export}")
       
       if security_group_rules.any?
         SecurityGroupIngress generate_security_group_rules(security_group_rules,ip_blocks)
@@ -54,7 +56,7 @@ CloudFormation do
 
     Output(:EcsSecurityGroup) {
       Value(Ref('SecurityGroupEcs'))
-      Export FnSub("${EnvironmentName}-#{external_parameters[:component_name]}-EcsSecurityGroup")
+      Export FnSub("${EnvironmentName}-#{export}-EcsSecurityGroup")
     }
   
     IAM_Role(:Role) {
@@ -141,7 +143,7 @@ CloudFormation do
     
     Output(:AutoScalingGroupName) {
       Value(Ref(:AutoScaleGroup))
-      Export FnSub("${EnvironmentName}-#{external_parameters[:component_name]}-AutoScalingGroupName")
+      Export FnSub("${EnvironmentName}-#{export}-AutoScalingGroupName")
     }
         
     IAM_Role(:DrainECSHookFunctionRole) {
